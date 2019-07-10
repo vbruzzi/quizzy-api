@@ -3,9 +3,11 @@ from pymongo import MongoClient
 from bson import json_util
 from flask_cors import CORS
 from bson import ObjectId
-import json
+import jsonfrom boto.s3.connection import S3Connection
 
-mongoURI = "URI HERE"
+
+mongoURI = os.environ.get('dbConnectionString', None)
+print(mongoURI)
 client = MongoClient(mongoURI)
 db = client.Quizzy
 col = db.Quizes
