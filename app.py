@@ -3,7 +3,6 @@ from pymongo import MongoClient
 from bson import json_util
 from flask_cors import CORS
 from bson import ObjectId
-import jsonfrom boto.s3.connection import S3Connection
 
 
 mongoURI = os.environ.get('dbConnectionString', None)
