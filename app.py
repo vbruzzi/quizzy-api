@@ -62,6 +62,6 @@ def add_stat():
 # Get stat for quiz
 @app.route('/stats/<quizId>', methods=["GET"])
 def get_stat(quizId):
-        stats = stats.find({'quizId':quizId})
-        mean = (o.result for o in stats)
+        values = stats.find({'quizId':quizId})
+        mean = (o.result for o in values)
         return mean, 200
