@@ -16,7 +16,7 @@ CORS(app)
 
 # Formats quiz into correct format
 def format_quiz(quiz):
-        return { 'id': quiz['_id'], 'name': quiz['name'], 'questions': quiz['questions']}
+        return { 'id': str(quiz['_id']), 'name': quiz['name'], 'questions': quiz['questions']}
 
 # Get quiz by ID
 @app.route('/quiz/<quizId>', methods=["GET"])
