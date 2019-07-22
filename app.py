@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from bson import json_util
@@ -5,7 +6,7 @@ from flask_cors import CORS
 from bson import ObjectId
 import json
 
-mongoURI = "URI HERE"
+mongoURI = os.environ['dbConnectionString']
 client = MongoClient(mongoURI)
 db = client.Quizzy
 col = db.Quizes
@@ -13,13 +14,29 @@ col = db.Quizes
 app = Flask(__name__)
 CORS(app)
 
+# Formats quiz into correct format
+def format_quiz(quiz):
+        return {'name': quiz['name'], 'questions': quiz['questions']}
+
+# Get quiz by ID
 @app.route('/quiz/<quizId>', methods=["GET"])
 def get_quiz(quizId):
         quiz = {"_id":ObjectId(quizId)}
         x = col.find_one(quiz)
-        output = {'name': x['name'], 'questions': x['questions']}
+        output = format_quiz(x)
         return jsonify(output)
+
+# Get random quiz
+@app.route('/random', methods=["GET"])
+def get_random():
+        random = list(col.aggregate([
+                { '$match': { 'public': True } },
+                { "$sample": { "size": 1 } }
+        ]))
+
+        return jsonify(format_quiz(random[0]))
           
+# Create single quiz
 @app.route('/create', methods=["POST"])
 def create_quiz():
         quiz = request.get_json()
