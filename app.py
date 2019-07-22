@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from bson import json_util
@@ -10,6 +11,7 @@ mongoURI = os.environ.get('dbConnectionString', None)
 client = MongoClient(mongoURI)
 db = client.Quizzy
 col = db.Quizes
+stats = db.Stats
 
 app = Flask(__name__)
 CORS(app)
@@ -49,3 +51,17 @@ def create_quiz():
 @app.route('/create', methods=["OPTIONS"])
 def return_options():
         return '' , 200
+
+# Submit Stat
+@app.route('/stats', methods=["POST"])
+def add_stat():
+        stat = request.get_json()
+        stats.insert(stat)
+        return '', 201
+
+# Get stat for quiz
+@app.route('/stats/<quizId>', methods=["GET"])
+def get_stat(quizId):
+        stats = stats.find({'quizId':quizId})
+        mean = (o.result for o in stats)
+        return mean, 200
