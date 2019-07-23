@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from bson import json_util
 from flask_cors import CORS
 from bson import ObjectId
+import statistics
 import os
 
 mongoURI = os.environ.get('dbConnectionString', None)
@@ -62,5 +63,5 @@ def add_stat():
 @app.route('/stats/<quizId>', methods=["GET"])
 def get_stat(quizId):
         values = stats.find({'quizId':quizId})
-        mean = (o.result for o in values)
+        mean = statistics.mean((o.result for o in values))
         return mean, 200
